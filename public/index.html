@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RichMail - Disposable Email Service</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="logo.jpg" type="image/jpeg">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div style="display:flex;align-items:center;justify-content:center;gap:12px">
+        <img src="logo.jpg" alt="RichMail" style="width:50px;height:50px;border-radius:50%">
+        <h1>RichMail</h1>
+      </div>
+      <p class="subtitle">Disposable Email Service</p>
+    </header>
+
+    <!-- Email Address Section -->
+    <section class="address-section">
+      <h2>Your Temporary Email Address</h2>
+      <div class="address-box">
+        <input type="text" id="emailAddress" readonly placeholder="Click 'Generate' to get an address">
+        <button id="copyBtn" class="btn btn-copy" title="Copy to clipboard">Copy</button>
+      </div>
+      <div class="address-controls">
+        <div class="domain-select">
+          <label for="domainSelect">Domain:</label>
+          <select id="domainSelect"></select>
+        </div>
+        <button id="generateBtn" class="btn btn-primary">Generate New Address</button>
+      </div>
+      <div class="custom-address">
+        <label for="customUsername">Or use custom username:</label>
+        <div class="custom-input-group">
+          <input type="text" id="customUsername" placeholder="your.name">
+          <span id="customDomainLabel">@domain.com</span>
+          <button id="customBtn" class="btn btn-secondary">Use This</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Inbox Section -->
+    <section class="inbox-section">
+      <div class="inbox-header">
+        <h2>Inbox <span id="emailCount" class="badge">0</span></h2>
+        <div class="inbox-actions">
+          <button id="refreshBtn" class="btn btn-small">&#8635; Refresh</button>
+          <button id="deleteAllBtn" class="btn btn-small btn-danger">&#128465; Delete All</button>
+        </div>
+      </div>
+      <div class="auto-refresh-info">
+        <label><input type="checkbox" id="autoRefresh" checked> Auto-refresh every 5 seconds</label>
+      </div>
+      <div id="emailList" class="email-list">
+        <div class="empty-inbox">
+          <p>&#128236; No emails yet</p>
+          <p class="hint">Waiting for incoming emails...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Email View Modal -->
+    <div id="emailModal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button id="backBtn" class="btn btn-small">&larr; Back to Inbox</button>
+          <button id="deleteEmailBtn" class="btn btn-small btn-danger">&#128465; Delete</button>
+        </div>
+        <div class="email-detail">
+          <div class="email-meta">
+            <div class="meta-row"><strong>From:</strong> <span id="emailFrom"></span></div>
+            <div class="meta-row"><strong>To:</strong> <span id="emailTo"></span></div>
+            <div class="meta-row"><strong>Subject:</strong> <span id="emailSubject"></span></div>
+            <div class="meta-row"><strong>Date:</strong> <span id="emailDate"></span></div>
+          </div>
+          <div class="email-body-tabs">
+            <button id="tabHtml" class="tab-btn active">HTML</button>
+            <button id="tabText" class="tab-btn">Text</button>
+            <button id="tabSource" class="tab-btn">Source</button>
+          </div>
+          <div id="emailBody" class="email-body"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info -->
+    <section class="info-section">
+      <h2>&#9881; Info</h2>
+      <div class="info-box">
+        <p><strong>Email Expiry:</strong> <span id="emailExpiry"></span> minutes</p>
+        <p><strong>Status:</strong> <span style="color:green">&#9679; Online</span></p>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Copyright <a href="https://t.me/ChRichStore" target="_blank" style="color:#2c3e50;text-decoration:none;font-weight:bold">Rich Store</a></p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+
+  <!-- Welcome Popup -->
+  <div id="welcomePopup" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center;padding:20px">
+    <div style="background:#fff;border-radius:8px;padding:30px;max-width:420px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.3)">
+      <img src="logo.jpg" alt="RichMail" style="width:70px;height:70px;border-radius:50%;margin-bottom:15px">
+      <h2 style="color:#2c3e50;margin-bottom:10px">Selamat Datang di RichMail!</h2>
+      <p style="color:#555;font-size:0.95em;margin-bottom:15px">RichMail adalah layanan email sementara gratis dengan dukungan custom domain. Terima email dari Gmail, Yahoo, Outlook langsung ke inbox Anda.</p>
+      <p style="color:#555;font-size:0.9em;margin-bottom:20px">Gabung grup Telegram kami untuk update, diskusi, dan bantuan:</p>
+      <a href="https://t.me/GrupRichStore" target="_blank" style="display:inline-block;background:#0088cc;color:#fff;padding:12px 25px;border-radius:5px;text-decoration:none;font-size:1em;font-weight:bold;margin-bottom:20px">Gabung Grup Telegram</a>
+      <br>
+      <button onclick="closeWelcome()" style="background:#2c3e50;color:#fff;border:none;padding:10px 20px;border-radius:5px;cursor:pointer;font-size:0.9em;margin-bottom:15px">Tutup</button>
+      <div style="margin-top:10px">
+        <label style="font-size:0.85em;color:#888;cursor:pointer"><input type="checkbox" id="dontShowAgain" style="margin-right:5px">Jangan tampilkan lagi</label>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var hidden = localStorage.getItem('richmail_hide_welcome');
+      if (hidden) return;
+      var popup = document.getElementById('welcomePopup');
+      popup.style.display = 'flex';
+    })();
+
+    function closeWelcome() {
+      var popup = document.getElementById('welcomePopup');
+      var checkbox = document.getElementById('dontShowAgain');
+      if (checkbox.checked) {
+        localStorage.setItem('richmail_hide_welcome', '1');
+      }
+      popup.style.display = 'none';
+    }
+
+    document.getElementById('dontShowAgain').addEventListener('change', function() {
+      if (this.checked) {
+        localStorage.setItem('richmail_hide_welcome', '1');
+      } else {
+        localStorage.removeItem('richmail_hide_welcome');
+      }
+    });
+  </script>
+</body>
+</html>
